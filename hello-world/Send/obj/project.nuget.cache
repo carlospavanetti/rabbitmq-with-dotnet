@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "sVAB0lpESbWR9/eueb/aRf73lbJYU5fUbntg4zbRdXAeezUdBpWybibbDvyo5hm7Wi2j/r+rq0UppqgAX98bCw==",
+  "success": true,
+  "projectFilePath": "/Users/carlos.prado/projetos/rabbitmq-dotnet/hello-world/Send/Send.csproj",
+  "expectedPackageFiles": [
+    "/Users/carlos.prado/.nuget/packages/rabbitmq.client/6.1.0/rabbitmq.client.6.1.0.nupkg.sha512",
+    "/Users/carlos.prado/.nuget/packages/system.memory/4.5.4/system.memory.4.5.4.nupkg.sha512",
+    "/Users/carlos.prado/.nuget/packages/system.threading.channels/4.7.1/system.threading.channels.4.7.1.nupkg.sha512"
+  ],
+  "logs": []
+}
