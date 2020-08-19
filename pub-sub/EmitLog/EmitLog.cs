@@ -8,22 +8,7 @@ namespace EmitLog
     {
         static void Main(string[] args)
         {
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            using(var connection = factory.CreateConnection())
-            using(var channel = connection.CreateModel())
-            {
-                channel.ExchangeDeclare(exchange: "logs",
-                                        type: ExchangeType.Fanout);
-
-                var message = GetMessage(args);
-                var body = Encoding.UTF8.GetBytes(message);
-                channel.BasicPublish(exchange: "logs", routingKey: "",
-                                     basicProperties: null, body: body);
-                Console.WriteLine(" [x] Sent {0}", message);
-            }
-
-            Console.WriteLine(" Press [enter] to exit.");
-            Console.ReadLine();
+            new EmitLog().run(GetMessage(args));
         }
 
         private static string GetMessage(string[] args)
@@ -31,6 +16,44 @@ namespace EmitLog
             return ((args.Length > 0)
                 ? string.Join(" ", args)
                 : "info: Hello World!");
+        }
+
+        public void run(string message)
+        {
+            WithQueue(publish =>
+            {
+                var body = Encoding.UTF8.GetBytes(message);
+                publish(body);
+                Console.WriteLine(" [x] Sent {0}", message);
+            });
+
+            Console.WriteLine(" Press [enter] to exit.");
+            Console.ReadLine();
+        }
+
+        private void WithQueue(Action<Action<byte[]>> task)
+        {
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+            using(var connection = factory.CreateConnection())
+            using(var channel = connection.CreateModel())
+            {
+                DeclareExchange(channel, name: "logs");
+                task(Publish(channel, exchange: "logs"));
+            }
+        }
+
+        private void DeclareExchange(IModel channel, string name)
+        {
+            var type = ExchangeType.Fanout;
+            channel.ExchangeDeclare(exchange: name, type: type);
+        }
+
+        private Action<byte[]> Publish(IModel channel, string exchange)
+        {
+            return body => channel.BasicPublish(
+                exchange: exchange, routingKey: "",
+                basicProperties: null, body: body
+            );
         }
     }
 }
